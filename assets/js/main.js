@@ -98,13 +98,21 @@
 
     function typeLoop() {
       if (!typedEl) return;
+
+      // The first role ships in the HTML so the heading is never empty at first
+      // paint (and stays correct with JS off / reduced motion on).
+      const seeded = (typedEl.textContent || "").trim();
       if (REDUCED) {
-        typedEl.textContent = ROLES[0];
+        if (!seeded) typedEl.textContent = ROLES[0];
         return;
       }
-      let r = 0;
-      let i = 0;
-      let deleting = false;
+
+      // Resume from the seeded word instead of blanking it, so there is no flash
+      // of empty text when the animation takes over.
+      let r = Math.max(0, ROLES.indexOf(seeded));
+      let i = seeded && ROLES[r] === seeded ? seeded.length : 0;
+      let deleting = i > 0;
+      let hold = deleting ? 1700 : 0;
 
       (function step() {
         const word = ROLES[r];
@@ -112,7 +120,8 @@
 
         let delay = deleting ? 42 : 82;
 
-        if (!deleting && i === word.length) {
+        if (hold) { delay = hold; hold = 0; }
+        else if (!deleting && i === word.length) {
           deleting = true;
           delay = 1700;
         } else if (deleting && i === 0) {

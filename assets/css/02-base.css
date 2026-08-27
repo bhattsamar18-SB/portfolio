@@ -462,4 +462,6 @@ em, .grad {
   }
   [data-reveal] { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
+  /* blink is decorative and infinite — stop it outright, don't just shorten it */
+  .caret { animation: none !important; opacity: 1; }
 }
