@@ -1,0 +1,178 @@
+/* ============================================================
+   07. DESIGN LAB (WebGL section)
+   ------------------------------------------------------------
+   Loaded last in the bundle; it has no specificity conflicts with
+   the earlier modules, so source order does not matter here even
+   though the section sits before Process in the document.
+
+   Everything in this file must look finished BEFORE any WebGL
+   arrives — .lab__poster is the state a reduced-motion or
+   no-WebGL visitor keeps permanently, so it cannot look broken.
+   ============================================================ */
+
+.lab__stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  padding: 0;
+  /* a stable box so the canvas never causes layout shift */
+  aspect-ratio: 16 / 9;
+  min-height: 340px;
+  box-shadow: var(--shadow);
+  isolation: isolate;
+}
+@media (max-width: 767px) {
+  .lab__stage { aspect-ratio: 4 / 5; min-height: 420px; }
+}
+
+/* ---- CSS poster (always painted, zero JS) ---- */
+.lab__poster {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(124, 92, 255, 0.22), transparent 58%),
+    radial-gradient(circle at 68% 70%, rgba(34, 224, 200, 0.14), transparent 55%),
+    var(--bg-2);
+  transition: opacity 0.9s var(--ease);
+}
+.lab__posterRing,
+.lab__posterCore {
+  position: absolute;
+  border-radius: 50%;
+}
+.lab__posterRing {
+  width: min(46%, 320px);
+  aspect-ratio: 1;
+  border: 1px dashed rgba(124, 92, 255, 0.55);
+}
+.lab__posterRing--2 {
+  width: min(62%, 430px);
+  border-style: solid;
+  border-color: rgba(34, 224, 200, 0.28);
+}
+.lab__posterCore {
+  width: min(26%, 170px);
+  aspect-ratio: 1;
+  background: radial-gradient(circle at 38% 32%, rgba(124, 92, 255, 0.55), rgba(34, 224, 200, 0.16) 62%, transparent 72%);
+  border: 1px solid var(--stroke-2);
+}
+
+/* Once WebGL is live the poster fades out — but it stays in the DOM so a
+   context loss can bring it straight back. */
+.lab[data-lab-state="live"] .lab__poster { opacity: 0; }
+
+/* ---- canvas host ---- */
+.lab__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 1s var(--ease);
+}
+.lab[data-lab-state="live"] .lab__canvas,
+.lab[data-lab-state="lite"] .lab__canvas { opacity: 1; }
+.lab__canvas canvas { display: block; width: 100%; height: 100%; }
+
+/* ---- HUD ---- */
+.lab__hud {
+  position: absolute;
+  z-index: 3;
+  top: 0; left: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: var(--sp-2);
+}
+.lab__badge,
+.lab__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 13px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--stroke);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  /* text-2 not text-3: this is 10.9px on the darkest surface here and must
+     still clear 4.5:1, same reasoning as .nav__brandText i */
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.lab__badge i { color: var(--accent); }
+.lab__status::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--text-3);
+  flex-shrink: 0;
+}
+.lab[data-lab-state="loading"] .lab__status::before { background: var(--gold); }
+.lab[data-lab-state="live"] .lab__status::before,
+.lab[data-lab-state="lite"] .lab__status::before { background: var(--accent); }
+
+/* ---- spec strip ---- */
+.lab__specs {
+  position: absolute;
+  z-index: 3;
+  bottom: 0; left: 0;
+  width: 100%;
+  margin: 0;
+  padding: var(--sp-2);
+  list-style: none;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.lab__specs li {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 14px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--stroke);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.lab__specs b {
+  font-family: var(--f-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.lab__specs span {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  color: var(--text-2);
+}
+@media (max-width: 575px) {
+  .lab__specs li:nth-child(n + 3) { display: none; }
+}
+
+/* ---- footnote ---- */
+.lab__note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 62ch;
+  margin: var(--sp-3) auto 0;
+  text-align: left;
+  font-size: 0.92rem;
+  color: var(--text-2);
+}
+.lab__note i { color: var(--accent); margin-top: 3px; flex-shrink: 0; }
+
+/* Reduced motion: the poster is the final state, so stop the fade from
+   implying something else is coming. */
+@media (prefers-reduced-motion: reduce) {
+  .lab__poster,
+  .lab__canvas { transition: none; }
+}

@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Samar Bhatt — UI/UX Developer &amp; Computer Engineering diploma student. Designing human-first interfaces and building them in code." />
+  <meta name="author" content="Samar Bhatt" />
+  <meta name="theme-color" content="#07070b" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Samar Bhatt — UI/UX Developer" />
+  <meta property="og:description" content="Computer Engineering diploma student, UI/UX Developer. Interfaces that feel obvious." />
+  <!-- og:image must be an absolute URL to be fetched by a crawler; a relative
+       path is silently ignored. Left relative deliberately until the real
+       domain is known — replace both with https://<domain>/assets/img/... -->
+  <meta property="og:image" content="assets/img/samar-900.jpg" />
+  <meta property="og:image:alt" content="Samar Bhatt, UI/UX developer" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Samar Bhatt — UI/UX Developer" />
+  <meta name="twitter:description" content="Computer Engineering diploma student, UI/UX Developer. Interfaces that feel obvious." />
+  <meta name="twitter:image" content="assets/img/samar-900.jpg" />
+
+  <title>Samar Bhatt — UI/UX Developer &amp; Computer Engineering Diploma Student</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Our own stylesheet is preloaded so it starts fetching in parallel with
+       Bootstrap rather than after it. First paint is gated on the SLOWEST
+       render-blocking sheet, and diagnose-fcp.mjs measured that being a
+       third-party one on every slow run. -->
+  <link rel="preload" href="assets/css/style.css" as="style" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons is NOT loaded from a CDN: it was 84 KB of CSS for 2050
+       icons plus a 127 KB font, and its fetch time drove first paint. The 43
+       icons this page uses are subset into assets/css/00-icons.css +
+       assets/fonts/bi-subset.woff2 (3.1 KB + 4.3 KB) by build-icons.py, and
+       are bundled into style.css. -->
+  <link rel="preload" href="assets/fonts/bi-subset.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ============ PRELOADER ============ -->
+  <div class="preloader" id="preloader">
+    <div class="preloader__inner">
+      <div class="preloader__mark">
+        <span class="preloader__letter">S</span><span class="preloader__letter">B</span>
+      </div>
+      <div class="preloader__label">
+        <span data-loader-text>Composing the grid</span>
+        <span class="preloader__pct" data-loader-pct>0%</span>
+      </div>
+      <div class="preloader__bar"><i data-loader-bar></i></div>
+    </div>
+  </div>
+
+  <!-- ============ CUSTOM CURSOR ============ -->
+  <div class="cursor" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"><span class="cursor-ring__label"></span></div>
+
+  <!-- ============ SCROLL PROGRESS ============ -->
+  <div class="scroll-progress" aria-hidden="true"><i id="scrollBar"></i></div>
+
+  <!-- ============ AMBIENT BACKDROP ============ -->
+  <!-- Static, paint-once layers only. No filter: blur(), no keyframes, no
+       canvas — the gradients below are baked into one composited element so
+       the first screen costs nothing to render. -->
+  <div class="backdrop" aria-hidden="true">
+    <div class="backdrop__wash"></div>
+    <div class="backdrop__grid"></div>
+    <div class="backdrop__noise"></div>
+  </div>
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="nav" id="nav">
+    <div class="container-xl">
+      <div class="nav__inner glass">
+        <a class="nav__brand" href="#home" data-cursor="Home">
+          <!-- Real face, not initials. This is above the fold, so it is eager and
+               tiny (3 KB webp at 160px); width/height are set so it can never
+               shift the navbar while decoding. -->
+          <span class="nav__brandMark">
+            <picture>
+              <source type="image/webp"
+                      srcset="assets/img/samar-avatar-160.webp 160w, assets/img/samar-avatar-320.webp 320w"
+                      sizes="40px" />
+              <img class="nav__brandPhoto"
+                   src="assets/img/samar-avatar-160.jpg"
+                   srcset="assets/img/samar-avatar-160.jpg 160w, assets/img/samar-avatar-320.jpg 320w"
+                   sizes="40px"
+                   width="40" height="40"
+                   decoding="async"
+                   alt="Samar Bhatt" />
+            </picture>
+          </span>
+          <span class="nav__brandText">
+            <b>Samar Bhatt</b>
+            <i>UI/UX Developer</i>
+          </span>
+        </a>
+
+        <nav class="nav__links" id="navLinks" aria-label="Primary">
+          <a href="#home" class="nav__link is-active" data-nav>Home</a>
+          <a href="#about" class="nav__link" data-nav>About</a>
+          <a href="#skills" class="nav__link" data-nav>Skills</a>
+          <a href="#experience" class="nav__link" data-nav>Experience</a>
+          <a href="#work" class="nav__link" data-nav>Work</a>
+          <a href="#lab" class="nav__link" data-nav>Lab</a>
+          <a href="#contact" class="nav__link" data-nav>Contact</a>
+          <span class="nav__pill" id="navPill" aria-hidden="true"></span>
+        </nav>
+
+        <div class="nav__actions">
+          <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle colour theme" data-cursor="Theme">
+            <i class="bi bi-moon-stars" data-theme-icon></i>
+          </button>
+          <a href="#contact" class="btn-glow d-none d-lg-inline-flex" data-magnetic data-cursor="Say hi">
+            <span>Let's talk</span><i class="bi bi-arrow-up-right"></i>
+          </a>
+          <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false">
+            <span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ MOBILE MENU ============ -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true"
+       aria-label="Site menu" aria-hidden="true">
+    <nav class="mobile-menu__list" aria-label="Mobile">
+      <a href="#home" data-mobile-link><span>01</span>Home</a>
+      <a href="#about" data-mobile-link><span>02</span>About</a>
+      <a href="#skills" data-mobile-link><span>03</span>Skills</a>
+      <a href="#experience" data-mobile-link><span>04</span>Experience</a>
+      <a href="#work" data-mobile-link><span>05</span>Work</a>
+      <a href="#lab" data-mobile-link><span>06</span>Design Lab</a>
+      <a href="#process" data-mobile-link><span>07</span>Process</a>
+      <a href="#contact" data-mobile-link><span>08</span>Contact</a>
+    </nav>
+    <div class="mobile-menu__foot">
+      <a href="mailto:bhattsamar18@gmail.com">bhattsamar18@gmail.com</a>
+      <div class="mobile-menu__social">
+        <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        <a href="#" aria-label="GitHub"><i class="bi bi-github"></i></a>
+        <a href="#" aria-label="Dribbble"><i class="bi bi-dribbble"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <main id="main">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="home">
+      <div class="container-xl hero__container">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-7">
+            <div class="hero__badge" data-reveal>
+              <span class="dot"></span> Available for internships &amp; freelance
+            </div>
+
+            <h1 class="hero__title">
+              <span class="line"><span data-split>Designing</span></span>
+              <span class="line"><span data-split>interfaces</span> <em data-split>people</em></span>
+              <span class="line"><em data-split>feel</em> <span data-split>at home in.</span></span>
+            </h1>
+
+            <p class="hero__role" data-reveal>
+              <i class="bi bi-terminal"></i>
+              <span class="typed" id="typed"></span><span class="caret">_</span>
+            </p>
+
+            <p class="hero__lede" data-reveal>
+              I'm <b>Samar Bhatt</b> — a Computer Engineering diploma student and UI/UX Developer.
+              I sketch flows in Figma, obsess over spacing and motion, then ship them as clean,
+              accessible front-end code.
+            </p>
+
+            <div class="hero__cta" data-reveal>
+              <a href="#work" class="btn-glow btn-glow--lg" data-magnetic data-cursor="Explore">
+                <span>View my work</span><i class="bi bi-arrow-down-right"></i>
+              </a>
+              <a href="#contact" class="btn-ghost" data-magnetic data-cursor="Email">
+                <i class="bi bi-send"></i><span>Hire me</span>
+              </a>
+            </div>
+
+            <div class="hero__stats" data-reveal>
+              <div class="stat">
+                <b class="stat__num" data-count="7.55" data-decimals="2">0</b>
+                <span class="stat__label">CGPA</span>
+              </div>
+              <div class="stat">
+                <b class="stat__num" data-count="1" data-suffix=" mo">0</b>
+                <span class="stat__label">Internship</span>
+              </div>
+              <div class="stat">
+                <b class="stat__num" data-count="12" data-suffix="+">0</b>
+                <span class="stat__label">UI projects</span>
+              </div>
+              <div class="stat">
+                <b class="stat__num" data-count="100" data-suffix="%">0</b>
+                <span class="stat__label">Pixel care</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="hero__card-stack" data-reveal>
+              <!-- floating spec card -->
+              <div class="spec-card glass" data-tilt>
+                <div class="spec-card__top">
+                  <span class="spec-card__dots"><i></i><i></i><i></i></span>
+                  <span class="spec-card__file">design-tokens.css</span>
+                </div>
+                <pre class="spec-card__code"><code><span class="c-sel">:root</span> {
+  <span class="c-prop">--brand</span>: <span class="c-val">#7c5cff</span>;
+  <span class="c-prop">--accent</span>: <span class="c-val">#22e0c8</span>;
+  <span class="c-prop">--radius</span>: <span class="c-val">22px</span>;
+  <span class="c-prop">--ease</span>: <span class="c-val">cubic-bezier(.22,1,.36,1)</span>;
+  <span class="c-prop">--grid</span>: <span class="c-val">8px</span>;
+}
+<span class="c-com">/* spacing scale = 8pt rhythm */</span></code></pre>
+                <div class="spec-card__swatches">
+                  <i style="--s:#7c5cff"></i><i style="--s:#22e0c8"></i>
+                  <i style="--s:#ff7ac6"></i><i style="--s:#ffd166"></i>
+                  <i style="--s:#0f1020"></i>
+                </div>
+              </div>
+
+              <div class="float-chip float-chip--figma glass" data-float="1">
+                <i class="bi bi-pen"></i> Figma → Code
+              </div>
+              <div class="float-chip float-chip--a11y glass" data-float="2">
+                <i class="bi bi-universal-access-circle"></i> WCAG AA
+              </div>
+              <div class="float-chip float-chip--motion glass" data-float="3">
+                <i class="bi bi-activity"></i> 60fps motion
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a href="#about" class="hero__scroll" aria-label="Scroll to about">
+        <span class="hero__scrollLine"><i></i></span>
+        <span class="hero__scrollText">Scroll</span>
+      </a>
+    </section>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marqueeTrack">
+        <span>User Research</span><i>✦</i><span>Wireframing</span><i>✦</i>
+        <span>Design Systems</span><i>✦</i><span>Prototyping</span><i>✦</i>
+        <span>Micro-interactions</span><i>✦</i><span>Accessibility</span><i>✦</i>
+        <span>Front-End Engineering</span><i>✦</i>
+      </div>
+    </div>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="section" id="about">
+      <div class="container-xl">
+        <div class="row g-5 align-items-start">
+          <div class="col-lg-5">
+            <div class="sec-head" data-reveal>
+              <span class="sec-head__kicker"><i></i>01 — About</span>
+              <h2 class="sec-head__title">A designer who<br /><em>writes the code.</em></h2>
+            </div>
+
+            <div class="about__portrait glass" data-reveal data-tilt>
+              <div class="about__portraitInner">
+                <!-- width/height are set so the browser reserves the box before the
+                     image arrives: no layout shift. loading="lazy" because this sits
+                     below the fold and must never compete with first paint. -->
+                <picture>
+                  <source
+                    type="image/webp"
+                    srcset="assets/img/samar-480.webp 480w, assets/img/samar-900.webp 900w"
+                    sizes="(max-width: 991px) 92vw, 440px" />
+                  <img
+                    class="about__photo"
+                    src="assets/img/samar-480.jpg"
+                    srcset="assets/img/samar-480.jpg 480w, assets/img/samar-900.jpg 900w"
+                    sizes="(max-width: 991px) 92vw, 440px"
+                    width="480" height="640"
+                    loading="lazy" decoding="async"
+                    alt="Samar Bhatt, UI/UX developer and Computer Engineering diploma student" />
+                </picture>
+                <span class="about__photoGlow" aria-hidden="true"></span>
+                <div class="about__ring" aria-hidden="true"></div>
+                <div class="about__ring about__ring--2" aria-hidden="true"></div>
+              </div>
+              <div class="about__portraitMeta">
+                <b>Samar Bhatt</b>
+                <span>Computer Engineering · UI/UX Developer</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="about__body">
+              <p class="lead-text" data-reveal>
+                I sit exactly where design meets engineering. As a <b>Computer Engineering</b>
+                diploma student I learnt how systems think; as a <b>UI/UX Developer</b> I learnt how
+                people feel. My work is the handshake between the two — interfaces that are
+                researched, prototyped and then built properly.
+              </p>
+              <p data-reveal>
+                I start with the messy part: user flows, edge cases, and the question
+                "what is this screen actually for?". Then come wireframes, a token-driven
+                design system, and a high-fidelity prototype. Finally I hand it to myself and
+                ship it in HTML, CSS and JavaScript — responsive, accessible and animated at 60fps.
+              </p>
+
+              <div class="about__facts" data-reveal>
+                <div class="fact glass">
+                  <i class="bi bi-mortarboard"></i>
+                  <b>Computer Engineering</b>
+                  <span>Diploma student</span>
+                </div>
+                <div class="fact glass">
+                  <i class="bi bi-graph-up-arrow"></i>
+                  <b>7.55 CGPA</b>
+                  <span>Consistent academic record</span>
+                </div>
+                <div class="fact glass">
+                  <i class="bi bi-briefcase"></i>
+                  <b>Antrix Web Solution</b>
+                  <span>Software Developer Intern · 1 month</span>
+                </div>
+                <div class="fact glass">
+                  <i class="bi bi-bounding-box"></i>
+                  <b>Design → Dev</b>
+                  <span>Figma, prototyping, front-end</span>
+                </div>
+              </div>
+
+              <div class="about__cta" data-reveal>
+                <a href="#contact" class="btn-glow" data-magnetic data-cursor="Talk">
+                  <span>Work with me</span><i class="bi bi-arrow-up-right"></i>
+                </a>
+                <a href="#" class="link-underline" data-cursor="Resume">Download résumé <i class="bi bi-download"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SKILLS ============ -->
+    <section class="section section--alt" id="skills">
+      <div class="container-xl">
+        <div class="sec-head sec-head--center" data-reveal>
+          <span class="sec-head__kicker"><i></i>02 — Skills</span>
+          <h2 class="sec-head__title">The toolkit behind<br /><em>every pixel.</em></h2>
+          <p class="sec-head__sub">Design thinking on the left, working code on the right.</p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <div class="skill-panel glass" data-reveal>
+              <h3 class="skill-panel__title"><i class="bi bi-palette"></i> Design</h3>
+              <div class="bar" data-bar="92">
+                <div class="bar__top"><span>UI Design &amp; Visual Systems</span><b>92%</b></div>
+                <div class="bar__track"><i></i></div>
+              </div>
+              <div class="bar" data-bar="88">
+                <div class="bar__top"><span>UX Research &amp; Wireframing</span><b>88%</b></div>
+                <div class="bar__track"><i></i></div>
+              </div>
+              <div class="bar" data-bar="90">
+                <div class="bar__top"><span>Prototyping &amp; Motion</span><b>90%</b></div>
+                <div class="bar__track"><i></i></div>
+              </div>
+              <div class="bar" data-bar="85">
+                <div class="bar__top"><span>Design Systems &amp; Tokens</span><b>85%</b></div>
+                <div class="bar__track"><i></i></div>
+              </div>
+              <div class="bar" data-bar="83">
+                <div class="bar__top"><span>Accessibility (WCAG)</span><b>83%</b></div>
+                <div class="bar__track"><i></i></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="tool-grid">
+              <div class="tool glass" data-reveal data-tilt><span class="tool__ico" style="--g:#ff7262"><i class="bi bi-pen-fill"></i></span><b>Figma</b><span>Design &amp; prototype</span></div>
+              <div class="tool glass" data-reveal data-tilt><span class="tool__ico" style="--g:#e34f26"><i class="bi bi-filetype-html"></i></span><b>HTML5</b><span>Semantic markup</span></div>
+              <div class="tool glass" data-reveal data-tilt><span class="tool__ico" style="--g:#2965f1"><i class="bi bi-filetype-css"></i></span><b>CSS3</b><span>Grid, Flex, animation</span></div>
+              <div class="tool glass" data-reveal data-tilt><span class="tool__ico" style="--g:#f0db4f"><i class="bi bi-filetype-js"></i></span><b>JavaScript</b><span>ES6+, DOM, APIs</span></div>
+              <div class="tool glass" data-reveal data-tilt><span class="tool__ico" style="--g:#7952b3"><i class="bi bi-bootstrap-fill"></i></span><b>Bootstrap 5</b><span>Rapid responsive UI</span></div>
+              <div class="tool glass" data-reveal data-tilt><span class="tool__ico" style="--g:#22e0c8"><i class="bi bi-box"></i></span><b>Three.js</b><span>WebGL &amp; 3D scenes</span></div>
+              <div class="tool glass" data-reveal data-tilt><span class="tool__ico" style="--g:#88ce02"><i class="bi bi-activity"></i></span><b>GSAP</b><span>Scroll &amp; timeline motion</span></div>
+              <div class="tool glass" data-reveal data-tilt><span class="tool__ico" style="--g:#f34f29"><i class="bi bi-git"></i></span><b>Git</b><span>Version control</span></div>
+              <div class="tool glass" data-reveal data-tilt><span class="tool__ico" style="--g:#ffd166"><i class="bi bi-lightbulb"></i></span><b>Adobe XD</b><span>Handoff &amp; specs</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EXPERIENCE + EDUCATION ============ -->
+    <section class="section" id="experience">
+      <div class="container-xl">
+        <div class="sec-head" data-reveal>
+          <span class="sec-head__kicker"><i></i>03 — Experience</span>
+          <h2 class="sec-head__title">Where I've learnt<br /><em>by shipping.</em></h2>
+        </div>
+
+        <div class="timeline">
+          <span class="timeline__spine" aria-hidden="true"><i id="spineFill"></i></span>
+
+          <article class="tl-item" data-reveal>
+            <span class="tl-item__node"></span>
+            <div class="tl-item__card glass" data-tilt>
+              <div class="tl-item__head">
+                <div>
+                  <h3>Software Developer Intern</h3>
+                  <p class="tl-item__org"><i class="bi bi-building"></i> Antrix Web Solution</p>
+                </div>
+                <span class="chip chip--accent">1 Month</span>
+              </div>
+              <p class="tl-item__text">
+                Worked alongside the development team on live client web projects — translating
+                designs into responsive interfaces, fixing UI inconsistencies, and learning how a
+                real delivery pipeline runs from brief to deployment.
+              </p>
+              <ul class="tl-item__list">
+                <li><i class="bi bi-check2"></i> Built responsive, cross-browser page layouts with HTML, CSS &amp; Bootstrap</li>
+                <li><i class="bi bi-check2"></i> Added JavaScript interactions and form validation to production pages</li>
+                <li><i class="bi bi-check2"></i> Refined spacing, typography and component states for visual consistency</li>
+                <li><i class="bi bi-check2"></i> Collaborated through code reviews, Git branches and daily stand-ups</li>
+              </ul>
+              <div class="tl-item__tags">
+                <span>HTML</span><span>CSS</span><span>JavaScript</span><span>Bootstrap</span><span>Git</span><span>Responsive UI</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-item" data-reveal>
+            <span class="tl-item__node"></span>
+            <div class="tl-item__card glass" data-tilt>
+              <div class="tl-item__head">
+                <div>
+                  <h3>UI/UX Developer · Self-directed</h3>
+                  <p class="tl-item__org"><i class="bi bi-vector-pen"></i> Personal &amp; academic projects</p>
+                </div>
+                <span class="chip">Ongoing</span>
+              </div>
+              <p class="tl-item__text">
+                Designing and building interface concepts end-to-end: research → wireframe →
+                design system → prototype → front-end build. Each project is an experiment in
+                motion, hierarchy and accessible interaction.
+              </p>
+              <div class="tl-item__tags">
+                <span>Figma</span><span>Design Systems</span><span>Prototyping</span><span>GSAP</span><span>Three.js</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-item" data-reveal>
+            <span class="tl-item__node"></span>
+            <div class="tl-item__card glass" data-tilt>
+              <div class="tl-item__head">
+                <div>
+                  <h3>Diploma in Computer Engineering</h3>
+                  <p class="tl-item__org"><i class="bi bi-mortarboard"></i> Polytechnic Diploma</p>
+                </div>
+                <span class="chip chip--gold">CGPA 7.55</span>
+              </div>
+              <p class="tl-item__text">
+                Core computer engineering foundations — data structures, DBMS, web
+                technologies, operating systems and programming fundamentals — applied
+                throughout to human-centred interface work.
+              </p>
+              <div class="gauge">
+                <div class="gauge__track"><i data-gauge="75.5"></i></div>
+                <div class="gauge__meta"><span>CGPA</span><b>7.55 / 10</b></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WORK ============ -->
+    <section class="section section--alt" id="work">
+      <div class="container-xl">
+        <div class="sec-head sec-head--split" data-reveal>
+          <div>
+            <span class="sec-head__kicker"><i></i>04 — Selected work</span>
+            <h2 class="sec-head__title">Case studies,<br /><em>not screenshots.</em></h2>
+          </div>
+          <p class="sec-head__sub">Each piece starts with a problem and ends with a shipped, tested interface.</p>
+        </div>
+
+        <div class="filters" data-reveal>
+          <button class="filter is-active" data-filter="all" type="button">All</button>
+          <button class="filter" data-filter="ux" type="button">UX Case Study</button>
+          <button class="filter" data-filter="ui" type="button">UI Design</button>
+          <button class="filter" data-filter="dev" type="button">Front-End</button>
+        </div>
+
+        <div class="work-grid" id="workGrid">
+
+          <article class="work glass work--wide" data-cat="ux dev" data-reveal data-cursor="View">
+            <div class="work__visual work__visual--fin">
+              <div class="mock mock--phone">
+                <div class="mock__bar"></div>
+                <div class="mock__balance"><span>Total balance</span><b>₹ 84,250</b></div>
+                <div class="mock__chart"><i style="--h:40%"></i><i style="--h:65%"></i><i style="--h:30%"></i><i style="--h:85%"></i><i style="--h:55%"></i><i style="--h:72%"></i></div>
+                <div class="mock__rows"><span></span><span></span><span></span></div>
+              </div>
+            </div>
+            <div class="work__body">
+              <div class="work__tags"><span>UX Case Study</span><span>Fintech</span></div>
+              <h3 class="work__title">Finlo — Personal Finance App</h3>
+              <p class="work__text">
+                Users abandoned budgeting apps because logging an expense took too long.
+                I redesigned the flow to a 2-tap entry with smart category prediction, cutting
+                the task from 6 steps to 2.
+              </p>
+              <div class="work__metrics">
+                <div><b>-67%</b><span>task steps</span></div>
+                <div><b>+41%</b><span>task success</span></div>
+                <div><b>AA</b><span>contrast</span></div>
+              </div>
+              <span class="work__go">Read case study <i class="bi bi-arrow-right"></i></span>
+            </div>
+          </article>
+
+          <article class="work glass" data-cat="ui dev" data-reveal data-cursor="View">
+            <div class="work__visual work__visual--shop">
+              <div class="mock mock--card">
+                <span class="mock__pill"></span>
+                <div class="mock__imgblock"></div>
+                <div class="mock__line w70"></div>
+                <div class="mock__line w40"></div>
+                <div class="mock__btn">Add to cart</div>
+              </div>
+            </div>
+            <div class="work__body">
+              <div class="work__tags"><span>UI Design</span><span>E-commerce</span></div>
+              <h3 class="work__title">Kraft — Artisan Store UI</h3>
+              <p class="work__text">A warm, editorial storefront system: 48 components, 3 breakpoints, one token file.</p>
+              <span class="work__go">View design <i class="bi bi-arrow-right"></i></span>
+            </div>
+          </article>
+
+          <article class="work glass" data-cat="dev" data-reveal data-cursor="View">
+            <div class="work__visual work__visual--dash">
+              <div class="mock mock--dash">
+                <div class="mock__side"><i></i><i></i><i></i><i></i></div>
+                <div class="mock__main">
+                  <div class="mock__kpis"><span></span><span></span><span></span></div>
+                  <div class="mock__graph"></div>
+                </div>
+              </div>
+            </div>
+            <div class="work__body">
+              <div class="work__tags"><span>Front-End</span><span>Dashboard</span></div>
+              <h3 class="work__title">Pulse — Analytics Dashboard</h3>
+              <p class="work__text">Data-dense admin UI built with Bootstrap 5 grid, custom charts and a dark-first palette.</p>
+              <span class="work__go">View build <i class="bi bi-arrow-right"></i></span>
+            </div>
+          </article>
+
+          <article class="work glass" data-cat="ux" data-reveal data-cursor="View">
+            <div class="work__visual work__visual--flow">
+              <div class="mock mock--flow">
+                <span class="node">Entry</span>
+                <span class="arrow"></span>
+                <span class="node node--alt">Verify</span>
+                <span class="arrow"></span>
+                <span class="node">Dash</span>
+              </div>
+            </div>
+            <div class="work__body">
+              <div class="work__tags"><span>UX Case Study</span><span>Onboarding</span></div>
+              <h3 class="work__title">Zero-Friction Onboarding</h3>
+              <p class="work__text">Restructured a 9-screen signup into 3 progressive steps with inline validation.</p>
+              <span class="work__go">Read case study <i class="bi bi-arrow-right"></i></span>
+            </div>
+          </article>
+
+          <article class="work glass work--wide" data-cat="ui dev" data-reveal data-cursor="View">
+            <div class="work__visual work__visual--ds">
+              <div class="mock mock--ds">
+                <div class="ds-row"><i style="--s:#7c5cff"></i><i style="--s:#22e0c8"></i><i style="--s:#ff7ac6"></i><i style="--s:#ffd166"></i><i style="--s:#5ea0ff"></i></div>
+                <div class="ds-type"><b>Aa</b><span>Sora / Outfit</span></div>
+                <div class="ds-comps"><span></span><span></span><span></span><span></span></div>
+              </div>
+            </div>
+            <div class="work__body">
+              <div class="work__tags"><span>Design System</span><span>Tokens</span></div>
+              <h3 class="work__title">Aurora — Design System</h3>
+              <p class="work__text">
+                A token-driven system with an 8pt rhythm, semantic colour roles and documented
+                component states — exported straight to CSS custom properties so design and code
+                never drift apart.
+              </p>
+              <div class="work__metrics">
+                <div><b>64</b><span>components</span></div>
+                <div><b>120</b><span>tokens</span></div>
+                <div><b>2</b><span>themes</span></div>
+              </div>
+              <span class="work__go">View system <i class="bi bi-arrow-right"></i></span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DESIGN LAB (WebGL) ============
+         Three.js lives ONLY here, and is fetched by a dynamic import() that
+         fires from an IntersectionObserver in three-lab.js. Nothing about this
+         section is in the critical path: no <script src="three"> in <head>, no
+         canvas above the fold. The .lab__poster below is a pure-CSS stand-in
+         that is visible immediately and stays if WebGL is unavailable,
+         reduced-motion is requested, or the device is low-powered. -->
+    <section class="section lab" id="lab" data-lab-state="idle">
+      <div class="container-xl">
+        <div class="sec-head sec-head--center" data-reveal>
+          <span class="sec-head__kicker"><i></i>05 — Design Lab</span>
+          <h2 class="sec-head__title">Where design<br /><em>gets dimensional.</em></h2>
+          <p class="sec-head__sub">
+            A live WebGL sketch built with Three.js — loaded only when you scroll here,
+            paused the moment it leaves your screen.
+          </p>
+        </div>
+
+        <div class="lab__stage glass" data-reveal>
+          <!-- CSS poster: paints instantly, needs no JS, and is what a
+               reduced-motion or no-WebGL visitor keeps. -->
+          <div class="lab__poster" aria-hidden="true">
+            <span class="lab__posterRing"></span>
+            <span class="lab__posterRing lab__posterRing--2"></span>
+            <span class="lab__posterCore"></span>
+          </div>
+
+          <div class="lab__canvas" id="labCanvas"></div>
+
+          <div class="lab__hud">
+            <span class="lab__badge">
+              <i class="bi bi-box"></i> Three.js r160
+            </span>
+            <span class="lab__status" data-lab-status role="status">
+              Scroll into view to load
+            </span>
+          </div>
+
+          <ul class="lab__specs">
+            <li><b>Lazy</b><span>imported on scroll</span></li>
+            <li><b>Paused</b><span>when off-screen</span></li>
+            <li><b>Capped</b><span>DPR ≤ 1.5</span></li>
+            <li><b>Optional</b><span>CSS fallback</span></li>
+          </ul>
+        </div>
+
+        <p class="lab__note" data-reveal>
+          <i class="bi bi-lightning-charge"></i>
+          Built deliberately: 3D should be a reward for scrolling, never a tax on arriving.
+          The library is fetched on demand, so the first screen stays under a second.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ PROCESS ============ -->
+    <section class="section" id="process">
+      <div class="container-xl">
+        <div class="sec-head sec-head--center" data-reveal>
+          <span class="sec-head__kicker"><i></i>06 — Process</span>
+          <h2 class="sec-head__title">How a screen<br /><em>earns its place.</em></h2>
+          <p class="sec-head__sub">Five steps, repeated until the interface feels obvious.</p>
+        </div>
+
+        <div class="process">
+          <div class="proc glass" data-reveal data-tilt>
+            <span class="proc__num">01</span>
+            <i class="bi bi-search proc__ico"></i>
+            <h3>Discover</h3>
+            <p>Interviews, competitor teardowns and job-to-be-done mapping. I define the problem before touching a canvas.</p>
+          </div>
+          <div class="proc glass" data-reveal data-tilt>
+            <span class="proc__num">02</span>
+            <i class="bi bi-bounding-box-circles proc__ico"></i>
+            <h3>Structure</h3>
+            <p>Information architecture, user flows and low-fidelity wireframes — fast, ugly and honest.</p>
+          </div>
+          <div class="proc glass" data-reveal data-tilt>
+            <span class="proc__num">03</span>
+            <i class="bi bi-palette2 proc__ico"></i>
+            <h3>Design</h3>
+            <p>Type scale, colour roles, spacing rhythm and components — assembled as a reusable token-based system.</p>
+          </div>
+          <div class="proc glass" data-reveal data-tilt>
+            <span class="proc__num">04</span>
+            <i class="bi bi-cursor proc__ico"></i>
+            <h3>Prototype</h3>
+            <p>Clickable prototypes with real motion, then usability testing to catch friction before dev time is spent.</p>
+          </div>
+          <div class="proc glass" data-reveal data-tilt>
+            <span class="proc__num">05</span>
+            <i class="bi bi-code-slash proc__ico"></i>
+            <h3>Build</h3>
+            <p>Semantic HTML, scalable CSS, vanilla JS and GSAP — responsive, accessible, and fast on real devices.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONIAL ============ -->
+    <section class="quote-band">
+      <div class="container-xl">
+        <figure class="quote glass" data-reveal data-tilt>
+          <i class="bi bi-quote quote__mark"></i>
+          <blockquote>
+            Samar picks up requirements quickly and has a genuinely good eye for detail.
+            He turned static designs into clean, responsive pages and kept asking
+            <em>why</em> — which is exactly what you want from a UI developer.
+          </blockquote>
+          <figcaption>
+            <span class="quote__av">AW</span>
+            <span class="quote__who"><b>Mentor · Development Team</b><i>Antrix Web Solution</i></span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="section section--alt" id="contact">
+      <div class="container-xl">
+        <div class="row g-5">
+          <div class="col-lg-5">
+            <div class="sec-head" data-reveal>
+              <span class="sec-head__kicker"><i></i>07 — Contact</span>
+              <h2 class="sec-head__title">Got a screen that<br /><em>needs rethinking?</em></h2>
+              <p class="sec-head__sub">Open to UI/UX internships, front-end roles and freelance design work.</p>
+            </div>
+
+            <ul class="contact-list" data-reveal>
+              <li class="glass">
+                <span class="contact-list__ico"><i class="bi bi-envelope"></i></span>
+                <div><b>Email</b><a href="mailto:bhattsamar18@gmail.com">bhattsamar18@gmail.com</a></div>
+              </li>
+              <li class="glass">
+                <span class="contact-list__ico"><i class="bi bi-geo-alt"></i></span>
+                <div><b>Location</b><span>India · open to remote</span></div>
+              </li>
+              <li class="glass">
+                <span class="contact-list__ico"><i class="bi bi-clock-history"></i></span>
+                <div><b>Response time</b><span>Usually within 24 hours</span></div>
+              </li>
+            </ul>
+
+            <div class="socials" data-reveal>
+              <a href="#" class="social" data-magnetic aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+              <a href="#" class="social" data-magnetic aria-label="GitHub"><i class="bi bi-github"></i></a>
+              <a href="#" class="social" data-magnetic aria-label="Dribbble"><i class="bi bi-dribbble"></i></a>
+              <a href="#" class="social" data-magnetic aria-label="Behance"><i class="bi bi-behance"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <form class="form glass" id="contactForm" novalidate data-reveal>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="field">
+                    <input type="text" id="name" name="name" placeholder=" " required minlength="2" autocomplete="name" />
+                    <label for="name">Your name</label>
+                    <small class="field__err">Please tell me your name.</small>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="field">
+                    <input type="email" id="email" name="email" placeholder=" " required autocomplete="email" />
+                    <label for="email">Email address</label>
+                    <small class="field__err">Enter a valid email address.</small>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="field">
+                    <input type="text" id="subject" name="subject" placeholder=" " required minlength="3" />
+                    <label for="subject">Subject</label>
+                    <small class="field__err">Add a short subject.</small>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="field">
+                    <textarea id="message" name="message" rows="5" placeholder=" " required minlength="10"></textarea>
+                    <label for="message">Tell me about the project</label>
+                    <small class="field__err">A little more detail, please (10+ characters).</small>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form__foot">
+                    <button type="submit" class="btn-glow btn-glow--lg" data-magnetic data-cursor="Send">
+                      <span>Send message</span><i class="bi bi-send"></i>
+                    </button>
+                    <p class="form__note"><i class="bi bi-shield-check"></i> Front-end demo — connect your own endpoint to go live.</p>
+                  </div>
+                  <div class="form__ok" id="formOk" role="status">
+                    <i class="bi bi-check-circle-fill"></i> Thanks! Your message has been validated and queued.
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+      <div class="container-xl">
+        <div class="footer__cta" data-reveal>
+          <h2>Let's build something<br /><em>worth using.</em></h2>
+          <a href="mailto:bhattsamar18@gmail.com" class="btn-glow btn-glow--lg" data-magnetic data-cursor="Email">
+            <span>bhattsamar18@gmail.com</span><i class="bi bi-arrow-up-right"></i>
+          </a>
+        </div>
+        <div class="footer__bar">
+          <p>© <span id="year">2025</span> Samar Bhatt · UI/UX Developer</p>
+          <p class="footer__built">Built with HTML, CSS, JS, Bootstrap 5, GSAP &amp; Three.js</p>
+          <a href="#home" class="footer__top" data-magnetic data-cursor="Top">Back to top <i class="bi bi-arrow-up"></i></a>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="assets/js/main.js"></script>
+  <!-- type="module" so the file can use dynamic import(); defer is implicit.
+       This loads AFTER first paint and pulls in Three.js only on scroll. -->
+  <script type="module" src="assets/js/three-lab.js"></script>
+</body>
+</html>

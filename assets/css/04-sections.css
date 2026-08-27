@@ -1,0 +1,441 @@
+/* ============================================================
+   04. SECTIONS — heads, about, skills, timeline
+   ============================================================ */
+
+.section {
+  position: relative;
+  padding: var(--sp-8) 0;
+}
+@media (max-width: 767px) { .section { padding: var(--sp-7) 0; } }
+
+.section--alt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, transparent, var(--surface) 22%, var(--surface) 78%, transparent);
+}
+
+/* ---- section head ---- */
+.sec-head { margin-bottom: var(--sp-5); }
+.sec-head--center { text-align: center; max-width: 780px; margin-inline: auto; }
+.sec-head--split {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+
+.sec-head__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--sp-2);
+}
+.sec-head__kicker i {
+  width: 30px; height: 1.5px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  display: inline-block;
+}
+.sec-head--center .sec-head__kicker { justify-content: center; }
+
+.sec-head__title {
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  font-weight: 700;
+}
+.sec-head__sub {
+  margin-top: var(--sp-2);
+  max-width: 52ch;
+  color: var(--text-2);
+  font-size: 1.05rem;
+}
+.sec-head--center .sec-head__sub { margin-inline: auto; }
+
+.lead-text {
+  font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+  line-height: 1.65;
+  color: var(--text);
+  font-weight: 300;
+  margin-bottom: var(--sp-3);
+}
+.lead-text b { font-weight: 600; }
+.about__body p { color: var(--text-2); }
+.about__body .lead-text { color: var(--text); }
+
+/* ============ ABOUT ============ */
+.about__portrait {
+  margin-top: var(--sp-4);
+  padding: var(--sp-3);
+  box-shadow: var(--shadow);
+  transform-style: preserve-3d;
+}
+.about__portraitInner {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r-md);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(124, 92, 255, 0.45), transparent 58%),
+    radial-gradient(circle at 72% 76%, rgba(34, 224, 200, 0.35), transparent 55%),
+    var(--bg-2);
+  border: 1px solid var(--stroke);
+}
+/* ---- portrait photo ----
+   The photo fills the square frame with object-fit:cover. object-position is
+   set from measurement, not taste: analyze-photo.py put the face centre at
+   y=43% / x=47% of the source, so anchoring near 47% 32% keeps the head in
+   frame instead of cropping it at the chin. */
+.about__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 47% 30%;
+  z-index: 1;
+  /* the image is the hero of this card; keep it crisp while it scales */
+  transform: scale(1.02);
+  transition: transform 1.1s var(--ease), filter var(--t-mid) var(--ease);
+}
+.about__portrait:hover .about__photo { transform: scale(1.06); }
+
+/* brand-tinted vignette so the photo sits inside the design language
+   rather than looking pasted on. Pure gradient = no per-frame cost. */
+.about__photoGlow {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 30% 22%, rgba(124, 92, 255, 0.28), transparent 55%),
+    radial-gradient(circle at 76% 82%, rgba(34, 224, 200, 0.22), transparent 52%),
+    linear-gradient(to top, rgba(7, 7, 11, 0.55), transparent 55%);
+  mix-blend-mode: normal;
+}
+[data-theme="light"] .about__photoGlow {
+  background:
+    radial-gradient(circle at 30% 22%, rgba(124, 92, 255, 0.18), transparent 55%),
+    radial-gradient(circle at 76% 82%, rgba(34, 224, 200, 0.14), transparent 52%),
+    linear-gradient(to top, rgba(255, 255, 255, 0.35), transparent 55%);
+}
+
+.about__ring {
+  position: absolute;
+  width: 74%; aspect-ratio: 1;
+  border: 1px dashed var(--stroke-2);
+  border-radius: 50%;
+  animation: spin 28s linear infinite;
+  /* above the photo + vignette so the design detail still reads */
+  z-index: 3;
+  opacity: 0.55;
+}
+.about__ring--2 {
+  width: 96%;
+  border-style: solid;
+  border-color: var(--stroke);
+  animation-duration: 44s;
+  animation-direction: reverse;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.about__portraitMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: var(--sp-2);
+  text-align: center;
+}
+.about__portraitMeta b {
+  font-family: var(--f-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.about__portraitMeta span {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+}
+
+.about__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-2);
+  margin: var(--sp-4) 0;
+}
+@media (max-width: 575px) { .about__facts { grid-template-columns: 1fr; } }
+
+.fact {
+  padding: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: transform var(--t-mid) var(--ease), border-color var(--t-mid) var(--ease),
+              box-shadow var(--t-mid) var(--ease);
+}
+.fact:hover {
+  transform: translateY(-6px);
+  border-color: var(--stroke-2);
+  box-shadow: var(--shadow);
+}
+.fact .bi {
+  font-size: 1.35rem;
+  color: var(--brand-2);
+  margin-bottom: 6px;
+}
+.fact b {
+  font-family: var(--f-display);
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.fact span { font-size: 0.85rem; color: var(--text-3); line-height: 1.5; }
+
+.about__cta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+/* ============ SKILLS ============ */
+.skill-panel {
+  padding: var(--sp-4);
+  height: 100%;
+  box-shadow: var(--shadow);
+}
+.skill-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: var(--sp-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--stroke);
+}
+.skill-panel__title .bi { color: var(--accent); }
+
+.bar { margin-bottom: var(--sp-3); }
+.bar:last-child { margin-bottom: 0; }
+.bar__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 9px;
+}
+.bar__top span { font-size: 0.92rem; color: var(--text-2); }
+.bar__top b {
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+}
+.bar__track {
+  height: 6px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  border: 1px solid var(--stroke);
+  overflow: hidden;
+}
+.bar__track i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--brand), var(--accent));
+  box-shadow: 0 0 14px rgba(124, 92, 255, 0.7);
+  transition: width 1.4s var(--ease);
+}
+
+/* ---- tool grid ---- */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-2);
+}
+@media (max-width: 767px) { .tool-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 400px) { .tool-grid { grid-template-columns: 1fr; } }
+
+.tool {
+  padding: var(--sp-3) var(--sp-2);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transform-style: preserve-3d;
+  transition: transform var(--t-mid) var(--ease), border-color var(--t-mid) var(--ease),
+              box-shadow var(--t-mid) var(--ease);
+}
+.tool:hover {
+  transform: translateY(-8px);
+  border-color: var(--stroke-2);
+  box-shadow: var(--shadow);
+}
+.tool__ico {
+  width: 50px; height: 50px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  font-size: 1.4rem;
+  color: var(--g);
+  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--g) 14%, transparent);
+  border: 1px solid var(--stroke-2);
+  border-color: color-mix(in srgb, var(--g) 32%, transparent);
+  margin-bottom: 8px;
+  transition: transform var(--t-mid) var(--ease), box-shadow var(--t-mid) var(--ease);
+}
+.tool:hover .tool__ico {
+  transform: rotate(-9deg) scale(1.1);
+  box-shadow: 0 10px 26px -10px var(--g);
+}
+.tool b {
+  font-family: var(--f-display);
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+.tool span {
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+}
+
+/* ============ TIMELINE ============ */
+.timeline { position: relative; padding-left: 46px; }
+@media (max-width: 575px) { .timeline { padding-left: 30px; } }
+
+.timeline__spine {
+  position: absolute;
+  top: 8px; left: 13px;
+  width: 2px;
+  height: calc(100% - 16px);
+  background: var(--stroke);
+  border-radius: 2px;
+  overflow: hidden;
+}
+@media (max-width: 575px) { .timeline__spine { left: 5px; } }
+.timeline__spine i {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(180deg, var(--brand), var(--accent));
+  box-shadow: 0 0 14px rgba(124, 92, 255, 0.8);
+}
+
+.tl-item { position: relative; margin-bottom: var(--sp-4); }
+.tl-item:last-child { margin-bottom: 0; }
+
+.tl-item__node {
+  position: absolute;
+  top: 30px; left: -40px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--brand);
+  box-shadow: 0 0 0 5px rgba(124, 92, 255, 0.16);
+  z-index: 2;
+}
+@media (max-width: 575px) { .tl-item__node { left: -31px; width: 13px; height: 13px; } }
+
+.tl-item__card {
+  padding: var(--sp-4);
+  box-shadow: var(--shadow);
+  transform-style: preserve-3d;
+  transition: transform var(--t-mid) var(--ease), border-color var(--t-mid) var(--ease);
+}
+.tl-item__card:hover { border-color: var(--stroke-2); }
+
+.tl-item__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-2);
+}
+.tl-item__head h3 {
+  font-size: clamp(1.15rem, 3vw, 1.45rem);
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.tl-item__org {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  color: var(--brand-2);
+  margin: 0;
+}
+.tl-item__text { color: var(--text-2); font-size: 0.98rem; }
+
+.tl-item__list {
+  list-style: none;
+  padding: 0;
+  margin: var(--sp-2) 0 var(--sp-3);
+  display: grid;
+  gap: 9px;
+}
+.tl-item__list li {
+  display: flex;
+  gap: 11px;
+  font-size: 0.93rem;
+  color: var(--text-2);
+  line-height: 1.55;
+}
+.tl-item__list .bi {
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.tl-item__tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tl-item__tags span {
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--stroke);
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  color: var(--text-2);
+}
+
+/* ---- CGPA gauge ---- */
+.gauge { margin-top: var(--sp-3); }
+.gauge__track {
+  height: 9px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  border: 1px solid var(--stroke);
+  overflow: hidden;
+}
+.gauge__track i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--brand), var(--gold));
+  transition: width 1.6s var(--ease);
+}
+.gauge__meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.gauge__meta span { color: var(--text-3); }
+.gauge__meta b { color: var(--gold); }
