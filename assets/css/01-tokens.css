@@ -1,0 +1,96 @@
+/* ============================================================
+   Samar Bhatt — Portfolio
+   01. TOKENS — design system foundation
+   ============================================================ */
+
+:root {
+  /* ---- Brand ---- */
+  --brand: #7c5cff;
+  --brand-2: #a78bfa;
+  --accent: #22e0c8;
+  --pink: #ff7ac6;
+  --gold: #ffd166;
+  --blue: #5ea0ff;
+  /* ---- Type ---- */
+  --f-display: "Sora", system-ui, sans-serif;
+  --f-body: "Outfit", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* ---- Rhythm: 8pt scale ---- */
+  --sp-1: 8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-5: 48px;
+  --sp-6: 64px;
+  --sp-7: 96px;
+  --sp-8: 128px;
+
+  /* ---- Radii ---- */
+  --r-sm: 12px;
+  --r-md: 18px;
+  --r-lg: 26px;
+  --r-xl: 34px;
+  --r-pill: 999px;
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 0.22s;
+  --t-mid: 0.45s;
+  --t-slow: 0.9s;
+
+  /* ---- Layout ---- */
+  --nav-h: 76px;
+  --maxw: 1280px;
+}
+
+/* ---------------- DARK (default) ---------------- */
+[data-theme="dark"] {
+  --bg: #07070b;
+  --bg-2: #0b0b12;
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-2: rgba(255, 255, 255, 0.075);
+  --stroke: rgba(255, 255, 255, 0.1);
+  --stroke-2: rgba(255, 255, 255, 0.18);
+  --text: #f2f2f7;
+  --text-2: #a9a9bd;
+  --text-3: #8a8aa3;
+  /* Accent tuned for SMALL TEXT, not decoration. --brand-2 is only 2.5:1 on
+     the light surface, so tinted labels/counters use this instead and stay
+     >= 4.5:1 in both themes. */
+  --brand-ink: #b9a4ff;
+  --shadow: 0 24px 70px -28px rgba(0, 0, 0, 0.85);
+  --glow: 0 0 60px -12px rgba(124, 92, 255, 0.55);
+  --grid-line: rgba(255, 255, 255, 0.035);
+/* The gradient wash is now painted as a hard-edged radial stack rather than a
+   blurred circle, so the stop colours carry a little more alpha to match the
+   old bloom. */
+  --orb-1: rgba(124, 92, 255, 0.4);
+  --orb-2: rgba(34, 224, 200, 0.24);
+  --orb-3: rgba(255, 122, 198, 0.2);
+  --noise-op: 0.05;
+  color-scheme: dark;
+}
+
+/* ---------------- LIGHT ---------------- */
+[data-theme="light"] {
+  --bg: #f6f6fb;
+  --bg-2: #ffffff;
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-2: rgba(255, 255, 255, 0.92);
+  --stroke: rgba(16, 16, 40, 0.09);
+  --stroke-2: rgba(16, 16, 40, 0.16);
+  --text: #12122b;
+  --text-2: #5a5a75;
+  --text-3: #6b6b85;
+  --brand-ink: #5f43d6;
+  --shadow: 0 24px 60px -30px rgba(24, 24, 60, 0.3);
+  --glow: 0 0 50px -14px rgba(124, 92, 255, 0.4);
+  --grid-line: rgba(16, 16, 48, 0.045);
+  --orb-1: rgba(124, 92, 255, 0.22);
+  --orb-2: rgba(34, 224, 200, 0.17);
+  --orb-3: rgba(255, 122, 198, 0.15);
+  --noise-op: 0.03;
+  color-scheme: light;
+}

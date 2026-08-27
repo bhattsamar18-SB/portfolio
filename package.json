@@ -1,0 +1,26 @@
+{
+  "name": "samar-bhatt-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Modern animated portfolio for Samar Bhatt — UI/UX Developer & Computer Engineering student. HTML, CSS, JS, Bootstrap 5, GSAP.",
+  "author": "Samar Bhatt",
+  "license": "MIT",
+  "keywords": [
+    "portfolio",
+    "ui-ux",
+    "gsap",
+    "bootstrap5",
+    "glassmorphism"
+  ],
+  "scripts": {
+    "start": "npx --yes serve . -l 5173",
+    "dev": "npx --yes serve . -l 5173",
+    "serve:python": "python -m http.server 5173",
+    "build:css": "python build-css.py"
+  },
+  "devDependencies": {
+    "axe-core": "^4.13.0",
+    "pngjs": "^7.0.0",
+    "puppeteer-core": "^25.9.0"
+  }
+}
